@@ -1,5 +1,5 @@
 
-
+import axios from 'axios';
 // const PDFExtract = require('pdf.js-extract').PDFExtract;
 import {PDFExtract} from 'pdf.js-extract';
 const pdfExtract = new PDFExtract();
@@ -11,12 +11,14 @@ const options = {}; /* see below */
 //   // console.log(data.pages.forEach(d=>console.log(d.content)))
 // });
 
-const allPagesData = await pdfExtract.extract('../sample.pdf', options)
-  const page = allPagesData.pages[0].content[0];
+const source = '../mmm.pdf';
+
+const allPagesData = await pdfExtract.extract(source, options)
+  const pagess = allPagesData.pages[0].content;
 
 
 // const { degrees, PDFDocument, rgb, StandardFonts } = require('pdf-lib');
-import  { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import  { degrees, PDFDocument, rgb, StandardFonts, translate } from 'pdf-lib';
 // const readFile = require('fs').readFile;
 import {readFile,writeFile} from 'fs/promises';
 
@@ -28,7 +30,7 @@ import {readFile,writeFile} from 'fs/promises';
 // const doWork = async () => {
 
 
-const existingPdfBytes = await readFile("../sample.pdf");
+const existingPdfBytes = await readFile(source);
 
 // Load a PDFDocument from the existing PDF bytes
 const pdfDoc = await PDFDocument.load(existingPdfBytes)
@@ -53,20 +55,57 @@ const { width, height } = firstPage.getSize()
 //   rotate: degrees(-45),
 // })
 
-console.log(page);
+// console.log(pagess);
 
-firstPage.drawRectangle({x: page.x,
+pagess.forEach(text => {
+firstPage.drawRectangle({x: text.x,
   color: rgb(1, 1, 1),
-  y: height - page.y - page.height,
-  width: 250,
-  height: 75})
+  y: height - text.y - text.height,
+  width: text.width,
+  height: 75});
+});
 
-firstPage.drawText("bla bla bla",{
-  x: page.x,
-  y: height - page.y,
-  size: 27,
+console.log(pagess.length);
+
+const translatedTexts = await Promise.all(pagess.map( (text,i) =>{
+  if(i>39){
+    return Promise.resolve(text);
+  }
+  console.log(text)
+return axios({url:'https://translate.mentality.rip/translate',
+    method: 'post',
+    data:{
+      q: text.str,
+      source: "en",
+      target: "fr",
+      format: "text"
+    },
+      headers:{
+        // "accept":"application/json",
+        "Content-Type":"application/json",
+      },
+    })
+  }))
+    ;
+
+// translatedTexts.forEach(x=>console.log(x.data.translatedText))
+
+for(const textNo in translatedTexts){
+
+// translatedTexts.forEach(text => {
+
+try{
+firstPage.drawText(translatedTexts[textNo].data.translatedText,{
+  x: pagess[textNo].x,
+  y: height - pagess[textNo].y,
+  size: pagess[textNo].height,
   font: helveticaFont,
 })
+}
+catch(e) {
+  console.log(e);
+}
+}
 
 
 // Serialize the PDFDocument to bytes (a Uint8Array)
