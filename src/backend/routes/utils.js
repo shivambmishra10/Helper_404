@@ -16,7 +16,7 @@ import {readFile,writeFile} from 'fs/promises';
 //   // console.log(data.pages.forEach(d=>console.log(d.content)))
 // });
 
-export const work = async (source) => {
+export const work = async (source,fromLang,toLang) => {
 
 // const source = '../mmm.pdf';
 
@@ -126,8 +126,8 @@ result.push(...chunk.map(
     method: 'post',
     data:{
       q: text.str,
-      source: "en",
-      target: "hi",
+      source: fromLang,
+      target: toLang,
       format: "text"
     },
     headers:{
