@@ -67,10 +67,7 @@ firstPage.drawRectangle({x: text.x,
 
 console.log(pagess.length);
 
-const translatedTexts = await Promise.all(pagess.map( (text,i) =>{
-  if(i>39){
-    return Promise.resolve(text);
-  }
+const translatedTexts = await Promise.all(pagess.slice(0,5).map( (text,i) =>{
   console.log(text)
 return axios({url:'https://translate.mentality.rip/translate',
     method: 'post',
@@ -88,23 +85,23 @@ return axios({url:'https://translate.mentality.rip/translate',
   }))
     ;
 
-// translatedTexts.forEach(x=>console.log(x.data.translatedText))
+translatedTexts.forEach(x=>console.log(x.data.translatedText))
 
 for(const textNo in translatedTexts){
 
 // translatedTexts.forEach(text => {
 
-try{
+// try{
 firstPage.drawText(translatedTexts[textNo].data.translatedText,{
   x: pagess[textNo].x,
   y: height - pagess[textNo].y,
   size: pagess[textNo].height,
   font: helveticaFont,
 })
-}
-catch(e) {
-  console.log(e);
-}
+// }
+// catch(e) {
+//   console.log(e);
+// }
 }
 
 
