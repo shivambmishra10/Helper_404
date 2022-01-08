@@ -1,6 +1,8 @@
 
 import axios from 'axios';
 // const PDFExtract = require('pdf.js-extract').PDFExtract;
+import fontkit from '@pdf-lib/fontkit';
+import fetch from 'node-fetch'
 import {PDFExtract} from 'pdf.js-extract';
 const pdfExtract = new PDFExtract();
 const options = {}; /* see below */
@@ -11,10 +13,10 @@ const options = {}; /* see below */
 //   // console.log(data.pages.forEach(d=>console.log(d.content)))
 // });
 
-const source = '../mmm.pdf';
+const source = '../sample.pdf';
 
 const allPagesData = await pdfExtract.extract(source, options)
-  const pagess = allPagesData.pages[0].content;
+  let pagess = allPagesData.pages[0].content;
 
 
 // const { degrees, PDFDocument, rgb, StandardFonts } = require('pdf-lib');
@@ -35,8 +37,22 @@ const existingPdfBytes = await readFile(source);
 // Load a PDFDocument from the existing PDF bytes
 const pdfDoc = await PDFDocument.load(existingPdfBytes)
 
+const openSansUrls = {
+  partial:
+    'https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0e.ttf',
+  full:
+    'https://github.com/google/fonts/raw/master/apache/opensans/OpenSans-Regular.ttf',
+};
+
+// Download the font
+const url = openSansUrls.full;
+console.log(`Downloading font from ${url}\n`);
+const openSansBytes = await fetch(url).then((res) => res.arrayBuffer());
+
 // Embed the Helvetica font
-const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+// const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+pdfDoc.registerFontkit(fontkit);
+  const openSansFont = await pdfDoc.embedFont(openSansBytes);
 
 // Get the first page of the document
 const pages = pdfDoc.getPages()
@@ -66,23 +82,69 @@ firstPage.drawRectangle({x: text.x,
 });
 
 console.log(pagess.length);
+pagess = pagess.filter(val => !/\w+$/.test(val))
 
-const translatedTexts = await Promise.all(pagess.slice(0,5).map( (text,i) =>{
-  console.log(text)
-return axios({url:'https://translate.mentality.rip/translate',
+
+console.log(pagess.length);
+// skja.sms
+
+// import translate_api from 'google-translate-api';
+// // const {translate_api} = pkg;
+
+// const k = await translate_api('Ik spreek Engels', {to: 'en'});
+// console.log(k.text);
+// .then(res => {
+//     console.log(res.text);
+//     //=> I speak English
+//     console.log(res.from.language.iso);
+//     //=> nl
+// }).catch(err => {
+//     console.error(err);
+// });
+
+
+
+function delay(n){
+  return new Promise(function(resolve){
+      setTimeout(resolve,n*1000);
+  });
+}
+
+const fetchPromises =async ()=>{
+  let result = [];
+  let i, chunk;
+for (i = 0; i < pagess.length; i += 30) {
+    chunk = pagess.slice(i, i + 30);
+    
+result.push(...chunk.map(
+  (text) =>{
+    console.log(text)
+    console.log("len:",chunk.length,"from ",i);
+    return axios({url:'https://translate.mentality.rip/translate',
     method: 'post',
     data:{
       q: text.str,
       source: "en",
-      target: "fr",
+      target: "hi",
       format: "text"
     },
-      headers:{
-        // "accept":"application/json",
-        "Content-Type":"application/json",
-      },
-    })
-  }))
+    headers:{
+      // "accept":"application/json",
+      "Content-Type":"application/json",
+    },
+  })
+}))
+  console.log("Waiting for 60 s");
+  await delay(60);
+}
+return result;
+}
+
+
+
+const translatedTexts = await Promise.all(
+  await fetchPromises()
+  )
     ;
 
 translatedTexts.forEach(x=>console.log(x.data.translatedText))
@@ -96,7 +158,7 @@ firstPage.drawText(translatedTexts[textNo].data.translatedText,{
   x: pagess[textNo].x,
   y: height - pagess[textNo].y,
   size: pagess[textNo].height,
-  font: helveticaFont,
+  font: openSansFont,
 })
 // }
 // catch(e) {
