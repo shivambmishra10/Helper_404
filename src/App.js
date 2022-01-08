@@ -29,7 +29,7 @@ function App() {
         setOutput(res.data.translatedText)
       })
     }
-
+  console.log("hello")
   useEffect(() => {
      axios.get('https://libretranslate.com/languages',
      {headers:{'accept':'application/json'}}).then(res=>
