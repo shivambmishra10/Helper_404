@@ -17,15 +17,16 @@ body {
 
 .wrapper {
   /* margin: auto; */
-  margin-left: 15%;
-  max-width: 640px;
+  margin-left: 7%;
+  max-width: 600px;
   padding-top: 60px;
   text-align: center;
 }
 
 .container {
   background-color: #f9f9f9;
-  padding: 20px;
+  padding: 50px;
+  margin-left:10px;
   border-radius: 10px;
   /*border: 0.5px solid rgba(130, 130, 130, 0.25);*/
   /*box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 
@@ -89,6 +90,8 @@ h1 {
   padding-bottom: 10px;
 }
   </style>
+  <link rel="stylesheet" href="./stylesheets/style.css">
+  
   <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
@@ -98,9 +101,26 @@ h1 {
   <p>Welcome to Express</p>
    -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   
-  
+  <nav>
+        <input type="checkbox" id="check" />
+        <label for="check" class="checkbtn">
+            <i class="fas fa-bars"></i>
+        </label>
+        <div class="Nav_logo">
+            <p Class="Logo_name">DocyTrans</p>
+            <img class="Logo_img" src="../images/Logo_svg.svg" alt="Logo" />
+        </div>
+        <ul>
+            <li><a class="active" href="#">Home</a></li>
+            <li><a href="#">Translate Document</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">FAQ's</a></li>
+
+        </ul>
+    </nav>
+    
   <div class="wrapper">
     <div class="container">
       
@@ -122,7 +142,7 @@ h1 {
       <form action="/" id="form-file" method="POST" enctype="multipart/form-data">
        <label for="from">Translate from:</label>
 
-<select name="from" id="list-from-languages">
+<select class="form-select form-select-lg mb-3" name="from" id="list-from-languages">
   <option value="en">English</option>
   <option value="ar">Arabic</option>
   <option value="zh">Chinese</option>
@@ -149,7 +169,7 @@ h1 {
 {{!-- <br/> --}}
        <label for="to" style="padding-left:30px;">Translate to:</label>
 
-<select name="to" id="list-to-languages">
+<select class="form-select form-select-lg mb-3" name="to" id="list-to-languages">
   <option value="en">English</option>
   <option value="ar">Arabic</option>
   <option value="zh">Chinese</option>
@@ -189,6 +209,52 @@ $("#file-browser").click(function(e) {
 });
 
 </script>
+
+<div class="footer-container">
+        <div class="footer_1">
+            <div class="footer_about_us">
+                <h2> Contributors </h2>
+                <a href="https://github.com/shivambmishra10" target="_blank" class="footer-user">
+                    <p>
+                        Shivam Mishra
+                    </p>
+                </a>
+                <a href="https://github.com/rameshchandrapola" target="_blank" class="footer-user">
+                    <p>
+                        Ramesh Chandra Pola
+                    </p>
+                </a>
+                <a href="https://github.com/JayYadav18" target="_blank" class="footer-user">
+                    <p>
+                        Jay yadav
+                    </p>
+                </a>
+            </div>
+            <div class="footer_options">
+                <h2>Translate document</h2>
+                <ui class="footer_options_list">
+                    <li>
+                        > English to Hindi
+                    </li>
+                    <li>
+                        > Hindi to English
+                    </li>
+                    <li>
+                        > English to Spanish
+                    </li>
+                    <li>
+                        > English to French
+                    </li>
+                </ui>
+            </div>
+        </div>
+
+            <div class="footer-copyright">
+                <p>
+                    &copy; 2022 DocyTrans - Made with <i class="fas fa-heart"></i> By Team Helper_404
+                </p>
+            </div>  
+    </div>
 
 </body>
 

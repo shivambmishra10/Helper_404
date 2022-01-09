@@ -10,29 +10,12 @@ const options = {}; /* see below */
 import  { degrees, PDFDocument, rgb, StandardFonts, translate } from 'pdf-lib';
 import {readFile,writeFile} from 'fs/promises';
 
-// pdfExtract.extract('../sample.pdf', options, (err, data) => {
-//   if (err) return console.log(err);
-//   console.log(data);
-//   // console.log(data.pages.forEach(d=>console.log(d.content)))
-// });
-
 export const work = async (source,fromLang,toLang) => {
 
 // const source = '../mmm.pdf';
 
 const allPagesData = await pdfExtract.extract(source, options)
   let pagess = allPagesData.pages[0].content;
-
-
-// const { degrees, PDFDocument, rgb, StandardFonts } = require('pdf-lib');
-// const readFile = require('fs').readFile;
-
-// This should be a Uint8Array or ArrayBuffer
-// This data can be obtained in a number of different ways
-// If your running in a Node environment, you could use fs.readFile()
-// In the browser, you could make a fetch() call and use res.arrayBuffer()
-
-// const doWork = async () => {
 
 
 const existingPdfBytes = await readFile(source);
@@ -66,18 +49,6 @@ const firstPage = pages[0]
 // Get the width and height of the first page
 const { width, height } = firstPage.getSize()
 
-// Draw a string of text diagonally across the first page
-// firstPage.drawText('This text was added with JavaScript!', {
-//   x: 5,
-//   y: height / 2 + 300,
-//   size: 50,
-//   font: helveticaFont,
-//   color: rgb(0.95, 0.1, 0.1),
-//   rotate: degrees(-45),
-// })
-
-// console.log(pagess);
-
 pagess.forEach(text => {
 firstPage.drawRectangle({x: text.x,
   color: rgb(1, 1, 1),
@@ -88,21 +59,6 @@ firstPage.drawRectangle({x: text.x,
 
 
 console.log(pagess.length);
-// skja.sms
-
-// import translate_api from 'google-translate-api';
-// // const {translate_api} = pkg;
-
-// const k = await translate_api('Ik spreek Engels', {to: 'en'});
-// console.log(k.text);
-// .then(res => {
-//     console.log(res.text);
-//     //=> I speak English
-//     console.log(res.from.language.iso);
-//     //=> nl
-// }).catch(err => {
-//     console.error(err);
-// });
 
 
 
@@ -115,8 +71,8 @@ function delay(n){
 const fetchPromises =async ()=>{
   let result = [];
   let i, chunk;
-for (i = 0; i < pagess.length; i += 30) {
-    chunk = pagess.slice(i, i + 30);
+for (i = 0; i < pagess.length; i += 39) {
+    chunk = pagess.slice(i, i + 39);
     
 result.push(...chunk.map(
   (text) =>{
@@ -136,7 +92,7 @@ result.push(...chunk.map(
     },
   })
 }))
- if(pagess.length - i >30){
+ if(pagess.length >35){
   console.log("Waiting for 60 s");
   await delay(60);
 }
@@ -155,9 +111,6 @@ translatedTexts.forEach(x=>console.log(x.data.translatedText))
 
 for(const textNo in translatedTexts){
 
-// translatedTexts.forEach(text => {
-
-// try{
   console.log(translatedTexts[textNo].data.translatedText)
 firstPage.drawText(translatedTexts[textNo].data.translatedText,{
   x: pagess[textNo].x,
@@ -165,10 +118,6 @@ firstPage.drawText(translatedTexts[textNo].data.translatedText,{
   size: pagess[textNo].height,
   font: openSansFont,
 })
-// }
-// catch(e) {
-//   console.log(e);
-// }
 }
 
 
@@ -177,12 +126,4 @@ const pdfBytes = await pdfDoc.save()
 
 await writeFile("output.pdf",pdfBytes)
 
-console.log("DONE")
-
-// For example, `pdfBytes` can be:
-//   • Written to a file in Node
-//   • Downloaded from the browser
-//   • Rendered in an <iframe>
-
 }
-
